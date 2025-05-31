@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן אמריקאי: יצירת משולשים מפונקציות לינאריות וקווים מאונכים</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            direction: rtl; /* Set overall direction to right-to-left */
+            text-align: right;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: auto;
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+        }
+        .note {
+            background-color: #e7f3ff;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .question p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .options label:hover {
+            background-color: #e9e9e9;
+        }
+        .options input[type="radio"] {
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .submit-btn {
+            display: block;
+            width: 200px;
+            padding: 12px;
+            margin: 30px auto 0;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1.1em;
+            background-color: #e9e9e9;
+            padding: 2px 5px;
+            border-radius: 3px;
+            direction: ltr; /* Equations should be LTR */
+            display: inline-block;
+        }
+        .answers-section {
+            display: none; /* Hidden by default */
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed #0056b3;
+        }
+        .answers-section h2 {
+            color: #d9534f;
+        }
+        .answer {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e0ffe0;
+            border: 1px solid #a4e4a4;
+            border-radius: 5px;
+        }
+        .answer strong {
+            color: #218838;
+        }
+        .answer p {
+            margin-bottom: 5px;
+        }
+        .answer ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .answer ul li {
+            margin-bottom: 5px;
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>מבחן אמריקאי: יצירת משולשים מפונקציות לינאריות</h1>
+        <p style="text-align: center;">מבחן זה בודק את הבנתכם בתנאים ליצירת משולשים באמצעות פונקציות לינאריות, כולל מקרים של קווים מאונכים.</p>
+
+        <div class="note">
+            <h3>הנחיות כלליות:</h3>
+            <p>עבור כל שאלה, בחרו את התשובה הנכונה ביותר מבין האפשרויות המוצגות.</p>
+        </div>
+
+        <form id="quizForm">
+            <div class="question">
+                <h2>שאלה 1</h2>
+                <p>איזה תנאי הכרחי לשיפועים של שלוש פונקציות לינאריות כדי שיוכלו ליצור משולש?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="a">א. כל שלושת השיפועים חייבים להיות זהים.</label>
+                    <label><input type="radio" name="q1" value="b">ב. לפחות שני שיפועים חייבים להיות שונים.</label>
+                    <label><input type="radio" name="q1" value="c">ג. כל שלושת השיפועים חייבים להיות חיוביים.</label>
+                    <label><input type="radio" name="q1" value="d">ד. השיפועים של שני קווים חייבים להיות הופכיים ונגדיים.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 2</h2>
+                <p>נתונה הפונקציה <strong>A: y = 2x + 1</strong>. איזו פונקציה מבין הבאות היא **מאונכת** ל-<strong>A</strong>?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="a">א. <span class="formula">y = 2x - 3</span></label>
+                    <label><input type="radio" name="q2" value="b">ב. <span class="formula">y = -2x + 5</span></label>
+                    <label><input type="radio" name="q2" value="c">ג. <span class="formula">y = -0.5x + 4</span></label>
+                    <label><input type="radio" name="q2" value="d">ד. <span class="formula">y = 0.5x + 1</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 3</h2>
+                <p>נתונות שלוש פונקציות: <strong>A: y = 3x</strong>, <strong>B: y = -x + 4</strong>, <strong>C: y = 2</strong>.
+                האם פונקציות אלו יכולות ליצור משולש?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="a">א. כן, בהחלט.</label>
+                    <label><input type="radio" name="q3" value="b">ב. לא, כי <strong>C</strong> היא קו אופקי.</label>
+                    <label><input type="radio" name="q3" value="c">ג. לא, כי כל השיפועים שונים.</label>
+                    <label><input type="radio" name="q3" value="d">ד. רק אם <strong>A</strong> ו-<strong>B</strong> מאונכים.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 4</h2>
+                <p>אם שלוש פונקציות לינאריות נחתכות כולן באותה נקודה, איזו צורה גאומטרית הן יוצרות?</p>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="a">א. משולש.</label>
+                    <label><input type="radio" name="q4" value="b">ב. מרובע.</label>
+                    <label><input type="radio" name="q4" value="c">ג. נקודה.</label>
+                    <label><input type="radio" name="q4" value="d">ד. קו ישר.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 5</h2>
+                <p>נתונה הפונקציה <strong>A: y = 5x - 1</strong>. איזו זוג פונקציות, בשילוב עם <strong>A</strong>, יצור משולש **ישר זווית**?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="a">א. <span class="formula">B: y = 5x + 2</span>, <span class="formula">C: y = -0.2x + 7</span></label>
+                    <label><input type="radio" name="q5" value="b">ב. <span class="formula">B: y = -0.2x + 3</span>, <span class="formula">C: y = x + 1</span></label>
+                    <label><input type="radio" name="q5" value="c">ג. <span class="formula">B: y = 5x + 0.5</span>, <span class="formula">C: y = 2x - 4</span></label>
+                    <label><input type="radio" name="q5" value="d">ד. <span class="formula">B: y = -x + 3</span>, <span class="formula">C: y = -0.2x - 2</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 6</h2>
+                <p>מהו השיפוע של קו ישר המאונך לציר ה-<strong>x</strong> (קו אנכי)?</p>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="a">א. 0</label>
+                    <label><input type="radio" name="q6" value="b">ב. 1</label>
+                    <label><input type="radio" name="q6" value="c">ג. לא מוגדר</label>
+                    <label><input type="radio" name="q6" value="d">ד. -1</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 7</h2>
+                <p>נתונות הפונקציות: <strong>A: y = 3x - 1</strong>, <strong>B: y = -1/3x + 5</strong>.
+                מה ניתן לומר על היחס בין <strong>A</strong> ל-<strong>B</strong>?</p>
+                <div class="options">
+                    <label><input type="radio" name="q7" value="a">א. הן מקבילות.</label>
+                    <label><input type="radio" name="q7" value="b">ב. הן מאונכות.</label>
+                    <label><input type="radio" name="q7" value="c">ג. הן זהות.</label>
+                    <label><input type="radio" name="q7" value="d">ד. הן חותכות בנקודה אחת ואין ביניהן יחס מיוחד.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 8</h2>
+                <p>כדי ליצור משולש ישר זווית, עלינו למצוא זוג קווים ששיפועיהם:</p>
+                <div class="options">
+                    <label><input type="radio" name="q8" value="a">א. זהים.</label>
+                    <label><input type="radio" name="q8" value="b">ב. הופכיים זה לזה.</label>
+                    <label><input type="radio" name="q8" value="c">ג. הופכיים ונגדיים זה לזה (מכפלתם -1).</label>
+                    <label><input type="radio" name="q8" value="d">ד. אף אחת מהתשובות אינה נכונה.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 9</h2>
+                <p>נתונה הפונקציה <strong>A: y = -x + 7</strong>. איזו אפשרות מייצגת שתי פונקציות נוספות שיוצרות משולש, כאשר אחת מהן מאונכת ל-<strong>A</strong> והשנייה מקבילה לציר ה-<strong>y</strong>?</p>
+                <div class="options">
+                    <label><input type="radio" name="q9" value="a">א. <span class="formula">B: y = x + 3</span>, <span class="formula">C: x = 5</span></label>
+                    <label><input type="radio" name="q9" value="b">ב. <span class="formula">B: y = -x - 1</span>, <span class="formula">C: y = 2x</span></label>
+                    <label><input type="radio" name="q9" value="c">ג. <span class="formula">B: y = 2x + 1</span>, <span class="formula">C: y = 4</span></label>
+                    <label><input type="radio" name="q9" value="d">ד. <span class="formula">B: y = -x + 2</span>, <span class="formula">C: x = 1</span></label>
+                </div>
+            </div>
+
+            <div class="question">
+                <h2>שאלה 10</h2>
+                <p>האם ניתן ליצור משולש בעל שתי זוויות ישרות באמצעות פונקציות לינאריות? ומדוע?</p>
+                <div class="options">
+                    <label><input type="radio" name="q10" value="a">א. כן, אם שני זוגות קווים מאונכים.</label>
+                    <label><input type="radio" name="q10" value="b">ב. לא, מכיוון שמשולש יכול להכיל לכל היותר זווית ישרה אחת.</label>
+                    <label><input type="radio" name="q10" value="c">ג. כן, אם כל שלושת השיפועים שונים מאוד.</label>
+                    <label><input type="radio" name="q10" value="d">ד. כן, אם שתי הפונקציות הנוספות הן קווים אנכיים.</label>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="showAnswers()">בדוק תשובות</button>
+        </form>
+
+        <div id="answersSection" class="answers-section">
+            <h2>מפתח תשובות</h2>
+
+            <div class="answer">
+                <strong>שאלה 1:</strong> ב. **לפחות שני שיפועים חייבים להיות שונים.**
+                <p>הסבר: אם כל השיפועים זהים, הקווים מקבילים (או זהים) ולא יחתכו ליצירת משולש. מספיק ששניים יהיו שונים כדי שייפגשו, והשלישי חייב לחתוך את שניהם בנקודות שונות.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 2:</strong> ג. <span class="formula">y = -0.5x + 4</span>
+                <p>הסבר: שיפוע של קו מאונך הוא הופכי ונגדי לשיפוע המקורי. השיפוע של <strong>A</strong> הוא 2. השיפוע ההופכי והנגדי ל-2 הוא <span class="formula">-1/2 = -0.5</span>.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 3:</strong> א. **כן, בהחלט.**
+                <p>הסבר: השיפועים הם 3, -1, ו-0 (עבור <span class="formula">y = 2</span>). כל השיפועים שונים זה מזה, ולכן הקווים ייחתכו בשלוש נקודות שונות וייצרו משולש.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 4:</strong> ג. **נקודה.**
+                <p>הסבר: אם כל הקווים נחתכים באותה נקודה (קונוקרנטיים), הם יוצרים צורת "כוכב" או "מניפה" סביב נקודה זו, ולא משולש בעל שלוש צלעות נפרדות.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 5:</strong> ב. <span class="formula">B: y = -0.2x + 3</span>, <span class="formula">C: y = x + 1</span>
+                <p>הסבר: כדי ליצור משולש ישר זווית, שני קווים חייבים להיות מאונכים. השיפוע של <strong>A</strong> הוא 5. השיפוע ההופכי והנגדי הוא <span class="formula">-1/5 = -0.2</span>. לכן, <span class="formula">B: y = -0.2x + 3</span> היא מאונכת ל-<strong>A</strong>. <span class="formula">C</span> עם שיפוע 1 מבטיחה שתהיה נקודת חיתוך נוספת ותיווצר צורה של משולש.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 6:</strong> ג. **לא מוגדר.**
+                <p>הסבר: קו אנכי הוא מהצורה <span class="formula">x = k</span>. השינוי ב-<strong>x</strong> בין שתי נקודות על קו כזה הוא אפס, ולכן חלוקה באפס בחישוב השיפוע (<span class="formula">Δy/Δx</span>) אינה מוגדרת.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 7:</strong> ב. **הן מאונכות.**
+                <p>הסבר: השיפוע של <strong>A</strong> הוא 3. השיפוע של <strong>B</strong> הוא <span class="formula">-1/3</span>. מכפלת השיפועים היא <span class="formula">3 * (-1/3) = -1</span>, ולכן הקווים מאונכים.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 8:</strong> ג. **הופכיים ונגדיים זה לזה (מכפלתם -1).**
+                <p>הסבר: זהו התנאי לכך ששני קווים יהיו מאונכים זה לזה, ובכך ייצרו זווית ישרה (90 מעלות) באחת מפינות המשולש.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 9:</strong> א. <span class="formula">B: y = x + 3</span>, <span class="formula">C: x = 5</span>
+                <p>הסבר: השיפוע של <strong>A</strong> הוא -1. קו מאונך ל-<strong>A</strong> צריך להיות בעל שיפוע הופכי ונגדי, כלומר 1. <span class="formula">B: y = x + 3</span> עונה על תנאי זה. <span class="formula">C: x = 5</span> היא קו אנכי, המקביל לציר ה-<strong>y</strong>. שלושתם ייצרו משולש.</p>
+            </div>
+
+            <div class="answer">
+                <strong>שאלה 10:</strong> ב. **לא, מכיוון שמשולש יכול להכיל לכל היותר זווית ישרה אחת.**
+                <p>הסבר: סכום הזוויות במשולש הוא 180 מעלות. אם היו שתי זוויות ישרות (90 מעלות כל אחת), סכומן היה 180 מעלות, ולא היה נשאר מקום לזווית שלישית (שחייבת להיות גדולה מ-0), מה שלא מאפשר יצירת משולש.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAnswers() {
+            document.getElementById('answersSection').style.display = 'block';
+            // Scroll to the answers section for better UX
+            document.getElementById('answersSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
