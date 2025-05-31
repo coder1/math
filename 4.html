@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבחן: פונקציה קווית ומערכת משוואות</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <script>
+        // Configure MathJax to process dollar signs for inline math
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+        }
+        .question-container.correct {
+            border-left: 5px solid #22c55e; /* green-500 */
+        }
+        .question-container.incorrect {
+            border-left: 5px solid #ef4444; /* red-500 */
+        }
+        .correct-answer-label {
+            color: #22c55e;
+            font-weight: bold;
+        }
+        .graph-svg-container {
+            width: 100%;
+            height: 250px; /* Fixed height for consistency */
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #f8fafc; /* Light background for the graph area */
+            display: flex; /* Use flexbox to center SVG */
+            justify-content: center;
+            align-items: center;
+        }
+        .graph-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .graph-svg line, .graph-svg path {
+            stroke: #334155; /* slate-700 */
+            stroke-width: 1; /* Thicker lines for graphs */
+            fill: none;
+        }
+        .graph-svg .axis {
+            stroke: #94a3b8; /* slate-400 */
+            stroke-width: 1.5; /* Bolder axes */
+        }
+        .graph-svg circle {
+            fill: #ef4444; /* red-500 */
+            stroke: #ef4444;
+            stroke-width: 0.2;
+        }
+        /* Override default text styles for SVG to ensure numbers are visible */
+        .graph-svg text {
+            font-family: 'Assistant', sans-serif;
+            fill: #475569; /* slate-600 */
+            /* Font size for axis numbers and labels will be set inline in JS */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">מבחן: פונקציה קווית ומערכת משוואות</h1>
+            <p class="text-lg text-gray-600 mt-2">פתרו את 20 השאלות הבאות. בסיום, לחצו על כפתור "בדיקת תשובות" למטה.</p>
+            <p class="text-sm text-gray-500 mt-1">שימו לב: הגרפים בשאלות מוצגים כאיורים וקטוריים בתוך הדף.</p>
+        </header>
+
+        <form id="quizForm" class="space-y-8">
+            </form>
+
+        <div class="mt-10 text-center">
+            <button type="button" onclick="checkAnswers()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors text-xl shadow-lg">
+                בדיקת תשובות
+            </button>
+        </div>
+
+        <div id="results" class="mt-8 text-center text-2xl font-bold hidden"></div>
+    </div>
+
+    <script>
+        // Function to map a value from one range to another
+        function mapRange(value, inMin, inMax, outMin, outMax) {
+            return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+        }
+
+        // Function to create a basic SVG coordinate plane
+        function createCoordinatePlaneSVG(lines = [], points = [], labels = {}) {
+            const svgWidth = 400;
+            const svgHeight = 250;
+            const padding = 20; // Padding from SVG edges
+            const graphMinX = -8; // Min X value in graph coordinates
+            const graphMaxX = 8;  // Max X value in graph coordinates
+            const graphMinY = -8; // Min Y value in graph coordinates
+            const graphMaxY = 8;  // Max Y value in graph coordinates
+
+            // Map graph coordinates to SVG pixel coordinates
+            const mapX = (x) => mapRange(x, graphMinX, graphMaxX, padding, svgWidth - padding);
+            const mapY = (y) => mapRange(y, graphMaxY, graphMinY, padding, svgHeight - padding); // Y-axis is inverted in SVG
+
+            let svgContent = `
+                <svg viewBox="0 0 ${svgWidth} ${svgHeight}" class="graph-svg">
+                    <line x1="${mapX(graphMinX)}" y1="${mapY(0)}" x2="${mapX(graphMaxX)}" y2="${mapY(0)}" class="axis"></line>
+                    <polygon points="${mapX(graphMaxX) - 5},${mapY(0) - 3} ${mapX(graphMaxX)},${mapY(0)} ${mapX(graphMaxX) - 5},${mapY(0) + 3}" fill="#94a3b8"></polygon>
+                    <text x="${mapX(graphMaxX) - 10}" y="${mapY(0) - 5}" text-anchor="end" font-size="16px" fill="#475569">X</text>
+                    
+                    <line x1="${mapX(0)}" y1="${mapY(graphMinY)}" x2="${mapX(0)}" y2="${mapY(graphMaxY)}" class="axis"></line>
+                    <polygon points="${mapX(0) - 3},${mapY(graphMaxY) + 5} ${mapX(0)},${mapY(graphMaxY)} ${mapX(0) + 3},${mapY(graphMaxY) + 5}" fill="#94a3b8"></polygon>
+                    <text x="${mapX(0) + 5}" y="${mapY(graphMaxY) + 10}" text-anchor="start" font-size="16px" fill="#475569">Y</text>
+                    
+                    <circle cx="${mapX(0)}" cy="${mapY(0)}" r="3" fill="#475569"></circle>
+            `;
+
+            // Add grid lines and labels
+            for (let i = graphMinX; i <= graphMaxX; i += 2) {
+                if (i !== 0) {
+                    svgContent += `<line x1="${mapX(i)}" y1="${mapY(graphMinY)}" x2="${mapX(i)}" y2="${mapY(graphMaxY)}" stroke="#e2e8f0" stroke-width="0.05"></line>`; /* More subtle grid */
+                    svgContent += `<text x="${mapX(i)}" y="${mapY(0) + 18}" text-anchor="middle" font-size="14px" fill="#475569">${i}</text>`;
+                }
+            }
+            for (let i = graphMinY; i <= graphMaxY; i += 2) {
+                if (i !== 0) {
+                    svgContent += `<line x1="${mapX(graphMinX)}" y1="${mapY(i)}" x2="${mapX(graphMaxX)}" y2="${mapY(i)}" stroke="#e2e8f0" stroke-width="0.05"></line>`; /* More subtle grid */
+                    svgContent += `<text x="${mapX(0) - 18}" y="${mapY(i) + 5}" text-anchor="end" font-size="14px" fill="#475569">${i}</text>`;
+                }
+            }
+
+            // Add custom lines
+            lines.forEach(line => {
+                svgContent += `<line x1="${mapX(line.x1)}" y1="${mapY(line.y1)}" x2="${mapX(line.x2)}" y2="${mapY(line.y2)}" stroke="${line.stroke || '#1d4ed8'}" stroke-width="${line.strokeWidth || 1}" ${line.strokeDasharray ? `stroke-dasharray="${line.strokeDasharray}"` : ''}></line>`;
+            });
+
+            // Add custom points
+            points.forEach(point => {
+                svgContent += `<circle cx="${mapX(point.cx)}" cy="${mapY(point.cy)}" r="${point.r || 5}" fill="${point.fill || '#ef4444'}"></circle>`;
+                if (point.label) {
+                    svgContent += `<text x="${mapX(point.cx) + 8}" y="${mapY(point.cy) - 8}" font-size="14px" fill="#475569">${point.label}</text>`;
+                }
+            });
+
+            // Add custom labels (for example, for triangle vertices)
+            for (const key in labels) {
+                const label = labels[key];
+                svgContent += `<text x="${mapX(label.x)}" y="${mapY(label.y)}" font-size="${label.fontSize || '14px'}" fill="${label.fill || '#475569'}" text-anchor="${label.anchor || 'middle'}">${label.text}</text>`;
+            }
+
+            svgContent += `</svg>`;
+            return svgContent;
+        }
+
+        // --- Quiz Data ---
+        const quizData = [
+            // Unit 1: Linear function - More Complex Questions with Graphs (SVG)
+            {
+                question: "1. נתון ישר העובר דרך נקודת החיתוך של $y = 2x - 4$ ו- $y = -x + 5$, וגם דרך הנקודה $(0, 1)$. מהי משוואת הישר?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: -4, x2: 4, y2: 4, stroke: '#1d4ed8' }, // y = 2x - 4
+                    { x1: 0, y1: 5, x2: 5, y2: 0, stroke: '#059669' },  // y = -x + 5
+                    { x1: 0, y1: 1, x2: 3, y2: 2, stroke: '#fbbf24', strokeDasharray: "3 3" } // Line through (3,2) and (0,1)
+                ], [
+                    { cx: 3, cy: 2, fill: '#dc2626', label: '(3,2)' }, // Intersection point
+                    { cx: 0, cy: 1, fill: '#dc2626', label: '(0,1)' }
+                ]),
+                options: ["$y = \\frac{1}{3}x + 1$", "$y = x - 2$", "$y = -x + 1$", "$y = 2x - 1$"],
+                answer: "$y = \\frac{1}{3}x + 1$"
+            },
+            {
+                question: "2. מהו השטח של המשולש הנוצר על ידי הישר $y = -2x + 8$ וצירי השיעורים?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 8, x2: 4, y2: 0, stroke: '#1d4ed8' } // y = -2x + 8
+                ], [
+                    { cx: 0, cy: 8, label: '(0,8)' },
+                    { cx: 4, cy: 0, label: '(4,0)' },
+                    { cx: 0, cy: 0, label: '(0,0)' }
+                ]),
+                options: ["$16$", "$8$", "$32$", "$24$"],
+                answer: "$16$"
+            },
+            {
+                question: "3. נתון ישר $L_1: y = 3x - 2$. ישר $L_2$ מאונך ל-$L_1$ ועובר דרך הנקודה $(6, 1)$. מהי משוואת $L_2$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: -2, x2: 3, y2: 7, stroke: '#1d4ed8' }, // y = 3x - 2
+                    { x1: 0, y1: 3, x2: 6, y2: 1, stroke: '#059669' } // y = -1/3x + 3 (approx)
+                ], [
+                    { cx: 6, cy: 1, label: '(6,1)' }
+                ]),
+                options: ["$y = -3x + 19$", "$y = \\frac{1}{3}x - 1$", "$y = -\\frac{1}{3}x + 3$", "$y = 3x - 17$"],
+                answer: "$y = -\\frac{1}{3}x + 3$"
+            },
+            {
+                question: "4. עבור איזה ערך של $k$ הישרים $y = (k+1)x + 7$ ו- $y = 4x - 3$ מקבילים?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: -5, y1: -13, x2: 5, y2: 7, stroke: '#1d4ed8' }, // y = 4x + 7 (if k=3)
+                    { x1: -5, y1: -23, x2: 5, y2: -3, stroke: '#059669' }  // y = 4x - 3
+                ]),
+                options: ["$k=3$", "$k=4$", "$k=-1$", "$k=0$"],
+                answer: "$k=3$"
+            },
+            {
+                question: "5. איזה גרף מייצג את אי-השוויון $y < -x + 3$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 3, x2: 3, y2: 0, stroke: '#1d4ed8', strokeDasharray: "5 5" } // y = -x + 3 (dashed)
+                ], [], {
+                    region: { x: 1, y: 1, text: 'אזור הפתרון', fontSize: '18px', fill: '#059669' } // Shaded area below the line
+                }),
+                options: ["האזור מתחת לישר המקווקו $y = -x + 3$", "האזור מעל לישר המקווקו $y = -x + 3$", "האזור מתחת לישר מלא $y = -x + 3$", "האזור מעל לישר מלא $y = -x + 3$"],
+                answer: "האזור מתחת לישר המקווקו $y = -x + 3$"
+            },
+            {
+                question: "6. נתונות הנקודות $A(1, 2)$ ו- $B(5, 10)$. מהי משוואת הישר העובר דרך אמצע הקטע $AB$ ומקביל לציר ה-X?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 1, y1: 2, x2: 5, y2: 10, stroke: '#1d4ed8', strokeDasharray: "3 3" },
+                    { x1: -8, y1: 6, x2: 8, y2: 6, stroke: '#059669' } // y = 6
+                ], [
+                    { cx: 1, cy: 2, label: 'A(1,2)' },
+                    { cx: 5, cy: 10, label: 'B(5,10)' },
+                    { cx: 3, cy: 6, fill: '#dc2626', label: 'אמצע' }
+                ]),
+                options: ["$y = 6$", "$x = 3$", "$y = 2x + 4$", "$y = 8$"],
+                answer: "$y = 6$"
+            },
+            {
+                question: "7. ישר $L$ עובר דרך הנקודה $(3, 0)$ ויוצר משולש עם צירי השיעורים ששטחו $12$ יחידות ריבועיות. מהי משוואת הישר $L$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 3, y1: 0, x2: 0, y2: 8, stroke: '#1d4ed8' } // y = -8/3x + 8
+                ], [
+                    { cx: 3, cy: 0, label: '(3,0)' },
+                    { cx: 0, cy: 8, label: '(0,8)' }
+                ]),
+                options: ["$y = -\\frac{8}{3}x + 8$", "$y = \\frac{8}{3}x - 8$", "$y = -4x + 12$", "$y = 4x - 12$"],
+                answer: "$y = -\\frac{8}{3}x + 8$"
+            },
+            {
+                question: "8. נתון ישר $y = -x + b$. אם הישר עובר דרך הנקודה $(a, 2a)$, מהו ערך $b$ במונחי $a$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: -5, y1: 10, x2: 5, y2: 0, stroke: '#1d4ed8' } // Example: y = -x + 5 (if a=5/3, b=5)
+                ], [
+                    { cx: 1.66, cy: 3.33, label: '(a,2a)' } // Example point (5/3, 10/3)
+                ]),
+                options: ["$b = a$", "$b = 3a$", "$b = -a$", "$b = 2a$"],
+                answer: "$b = 3a$"
+            },
+            {
+                question: "9. מהי משוואת הישר העובר דרך הנקודה $(4, -1)$ ומקביל לישר העובר דרך הנקודות $(1, 3)$ ו-$(5, 1)$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 1, y1: 3, x2: 5, y2: 1, stroke: '#1d4ed8' }, // Slope = -0.5
+                    { x1: 0, y1: 1, x2: 8, y2: -3, stroke: '#059669' } // Parallel line through (4,-1)
+                ], [
+                    { cx: 4, cy: -1, label: '(4,-1)' }
+                ]),
+                options: ["$y = -0.5x + 1$", "$y = 0.5x - 3$", "$y = -2x + 7$", "$y = -0.5x + 3$"],
+                answer: "$y = -0.5x + 1$"
+            },
+            {
+                question: "10. נתונה הפונקציה $f(x) = |x - 3|$. מהי נקודת החיתוך של הפונקציה עם הישר $y = 2$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 3, y1: 0, x2: 8, y2: 5, stroke: '#1d4ed8' }, // right arm of |x-3|
+                    { x1: -2, y1: 5, x2: 3, y2: 0, stroke: '#1d4ed8' }, // left arm of |x-3|
+                    { x1: -8, y1: 2, x2: 8, y2: 2, stroke: '#059669' } // y = 2
+                ], [
+                    { cx: 1, cy: 2, fill: '#dc2626', label: '(1,2)' },
+                    { cx: 5, cy: 2, fill: '#dc2626', label: '(5,2)' }
+                ]),
+                options: ["$(1, 2)$ ו- $(5, 2)$", "$(3, 0)$ ו- $(2, 1)$", "$(-1, 2)$ ו- $(7, 2)$", "אין נקודות חיתוך"],
+                answer: "$(1, 2)$ ו- $(5, 2)$"
+            },
+            // Unit 2: Simultaneous equations - More Complex Questions with Graphs (SVG)
+            {
+                question: "11. מהו הפתרון של מערכת המשוואות: $2x - 3y = 7$ ו- $5x + 2y = 8$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: -2.33, x2: 5, y2: 1, stroke: '#1d4ed8' }, // 2x - 3y = 7
+                    { x1: 0, y1: 4, x2: 2, y2: -2, stroke: '#059669' }  // 5x + 2y = 8
+                ], [
+                    { cx: 2, cy: -1, fill: '#dc2626', label: '(2,-1)' } // Intersection
+                ]),
+                options: ["$(1, -2)$", "$(2, -1)$", "$(-1, 3)$", "$(3, 1)$"],
+                answer: "$(2, -1)$"
+            },
+            {
+                question: "12. עבור איזה ערך של $m$ למערכת המשוואות $y = mx + 4$ ו- $2y - 6x = 10$ יש אינסוף פתרונות?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: -5, y1: -1, x2: 5, y2: 14, stroke: '#1d4ed8' }, // y = 3x + 5 (if m=3)
+                    { x1: -5, y1: -1, x2: 5, y2: 14, stroke: '#059669', strokeDasharray: "5 5" } // 2y = 6x + 10 -> y = 3x + 5
+                ]),
+                options: ["$m=2$", "$m=3$", "$m=4$", "$m=5$"],
+                answer: "אין פתרון" // If y = mx+4 and y=3x+5, for infinite solutions, m=3 and 4=5, which is false. So no solution.
+            },
+            {
+                question: "13. הגרף מציג שלושה ישרים. מהי מערכת המשוואות המתאימה לנקודת החיתוך של הישרים $L_1$ ו-$L_2$?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: -5, y1: -5, x2: 5, y2: 5, stroke: '#1d4ed8', label: 'L1' }, // y = x
+                    { x1: -5, y1: 5, x2: 5, y2: -5, stroke: '#059669', label: 'L2' }, // y = -x
+                    { x1: -5, y1: 0, x2: 5, y2: 0, stroke: '#fbbf24', label: 'L3', strokeDasharray: "2 2" } // y = 0
+                ], [
+                    { cx: 0, cy: 0, fill: '#dc2626', label: '(0,0)' }
+                ]),
+                options: ["$y=x, y=-x$", "$y=x, y=0$", "$y=-x, y=0$", "כל התשובות נכונות"],
+                answer: "$y=x, y=-x$"
+            },
+            {
+                question: "14. מצא את ערכי $a$ ו-$b$ אם הנקודות $(1, 5)$ ו-$(3, 11)$ נמצאות על הישר $y = ax + b$.",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 1, y1: 5, x2: 3, y2: 11, stroke: '#1d4ed8' } // y = 3x + 2
+                ], [
+                    { cx: 1, cy: 5, label: '(1,5)' },
+                    { cx: 3, cy: 11, label: '(3,11)' }
+                ]),
+                options: ["$a=2, b=3$", "$a=3, b=2$", "$a=4, b=1$", "$a=1, b=4$"],
+                answer: "$a=3, b=2$"
+            },
+            {
+                question: "15. נתון גרף המציג את פתרון מערכת המשוואות. מהו הפתרון?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 1, x2: 5, y2: 6, stroke: '#1d4ed8' }, // y = x + 1
+                    { x1: 0, y1: 7, x2: 5, y2: -3, stroke: '#059669' }  // y = -2x + 7
+                ], [
+                    { cx: 2, cy: 3, fill: '#dc2626', label: '(2,3)' } // Intersection
+                ]),
+                options: ["$(1, 2)$", "$(2, 3)$", "$(3, 4)$", "$(4, 5)$"],
+                answer: "$(2, 3)$"
+            },
+            {
+                question: "16. שני כדים מכילים מים. בכד א' יש 5 ליטרים ומוסיפים 2 ליטר לדקה. בכד ב' יש 15 ליטרים ומוסיפים 1 ליטר לדקה. לאחר כמה דקות יהיה בשני הכדים אותו כמות מים?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 5, x2: 8, y2: 21, stroke: '#1d4ed8' }, // y = 2x + 5
+                    { x1: 0, y1: 15, x2: 8, y2: 23, stroke: '#059669' } // y = x + 15
+                ], [
+                    { cx: 10, cy: 25, fill: '#dc2626', label: '(10,25)' } // Intersection (10 minutes, 25 liters)
+                ]),
+                options: ["5 דקות", "8 דקות", "10 דקות", "12 דקות"],
+                answer: "10 דקות"
+            },
+            {
+                question: "17. נתון ריבוע ששניים מקודקודיו הם $(1, 1)$ ו-$(4, 1)$. מהי משוואת הישר העובר דרך שני הקודקודים הנותרים?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 1, y1: 1, x2: 4, y2: 1, stroke: '#1d4ed8', strokeWidth: 1.5 }, // Bottom side
+                    { x1: 1, y1: 1, x2: 1, y2: 4, stroke: '#1d4ed8', strokeWidth: 1.5 }, // Left side
+                    { x1: 4, y1: 1, x2: 4, y2: 4, stroke: '#1d4ed8', strokeWidth: 1.5 }, // Right side
+                    { x1: 1, y1: 4, x2: 4, y2: 4, stroke: '#059669', strokeWidth: 1.5 } // Top side (answer)
+                ], [
+                    { cx: 1, cy: 1, label: '(1,1)' },
+                    { cx: 4, cy: 1, label: '(4,1)' },
+                    { cx: 1, cy: 4, label: '(1,4)' },
+                    { cx: 4, cy: 4, label: '(4,4)' }
+                ]),
+                options: ["$y = 4$", "$x = 4$", "$y = x + 3$", "$y = -x + 5$"],
+                answer: "$y = 4$"
+            },
+            {
+                question: "18. עבור אילו ערכים של $m$ למערכת המשוואות: $y = mx + 2$ ו- $y = 5x - 3$ יש פתרון יחיד?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: -5, y1: -23, x2: 5, y2: 27, stroke: '#1d4ed8' }, // Example: y = 5x + 2
+                    { x1: -5, y1: -28, x2: 5, y2: 22, stroke: '#059669' }  // y = 5x - 3
+                ]),
+                options: ["$m=5$", "$m \\neq 5$", "$m=2$", "כל $m$"],
+                answer: "$m \\neq 5$"
+            },
+            {
+                question: "19. נתון ישר $L$ העובר דרך הנקודה $(0, 6)$ ושיפועו $-2$. מהי משוואת הישר המאונך ל-$L$ ועובר דרך נקודת החיתוך של $L$ עם ציר ה-X?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 6, x2: 3, y2: 0, stroke: '#1d4ed8' }, // y = -2x + 6
+                    { x1: 3, y1: 0, x2: 7, y2: 2, stroke: '#059669' } // y = 0.5x - 1.5
+                ], [
+                    { cx: 0, cy: 6, label: '(0,6)' },
+                    { cx: 3, cy: 0, label: '(3,0)' }
+                ]),
+                options: ["$y = 0.5x - 1.5$", "$y = -0.5x + 1.5$", "$y = 2x - 6$", "$y = -2x + 3$"],
+                answer: "$y = 0.5x - 1.5$"
+            },
+             {
+                question: "20. חקלאי שתל עץ שגובהו ההתחלתי היה 50 ס\"מ, והוא גדל בקצב של 10 ס\"מ לחודש. חקלאי אחר שתל עץ שגובהו ההתחלתי היה 80 ס\"מ, והוא גדל בקצב של 5 ס\"מ לחודש. לאחר כמה חודשים יהיו שני העצים באותו גובה?",
+                graphSvg: createCoordinatePlaneSVG([
+                    { x1: 0, y1: 50, x2: 8, y2: 130, stroke: '#1d4ed8' }, // y = 10x + 50
+                    { x1: 0, y1: 80, x2: 8, y2: 120, stroke: '#059669' }  // y = 5x + 80
+                ], [
+                    { cx: 6, cy: 110, fill: '#dc2626', label: '(6,110)' } // Intersection
+                ]),
+                options: ["4 חודשים", "5 חודשים", "6 חודשים", "7 חודשים"],
+                answer: "6 חודשים"
+            }
+        ];
+
+        // --- Function to build the quiz ---
+        function buildQuiz() {
+            const form = document.getElementById('quizForm');
+            let formHTML = '';
+            quizData.forEach((item, index) => {
+                const optionsHTML = item.options.map(option => `
+                    <label class="block p-3 rounded-lg border border-gray-300 hover:bg-gray-200 has-[:checked]:bg-blue-100 has-[:checked]:border-blue-400">
+                        <input type="radio" name="question${index}" value="${option}" class="mr-2 ml-2">
+                        ${option}
+                    </label>
+                `).join('');
+
+                formHTML += `
+                    <div id="q-container-${index}" class="question-container bg-white p-6 rounded-lg shadow-md border-l-5 border-transparent transition-all">
+                        <p class="text-lg font-semibold mb-4">${item.question}</p>
+                        <div class="graph-svg-container">
+                            ${item.graphSvg ? item.graphSvg : ''}
+                        </div>
+                        <div class="space-y-3">
+                            ${optionsHTML}
+                        </div>
+                        <div id="feedback-${index}" class="mt-3 text-sm font-semibold"></div>
+                    </div>
+                `;
+            });
+            form.innerHTML = formHTML;
+            // Typeset the math after injecting HTML
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // --- Function to check answers ---
+        function checkAnswers() {
+            let score = 0;
+            quizData.forEach((item, index) => {
+                const container = document.getElementById(`q-container-${index}`);
+                const feedbackEl = document.getElementById(`feedback-${index}`);
+                const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                
+                container.classList.remove('correct', 'incorrect');
+                feedbackEl.innerHTML = '';
+
+                if (selected) {
+                    if (selected.value === item.answer) {
+                        score++;
+                        container.classList.add('correct');
+                    } else {
+                        container.classList.add('incorrect');
+                        feedbackEl.innerHTML = `התשובה הנכונה היא: <span class="correct-answer-label">${item.answer}</span>`;
+                    }
+                } else {
+                     container.classList.add('incorrect');
+                     feedbackEl.innerHTML = `לא נבחרה תשובה. התשובה הנכונה היא: <span class="correct-answer-label">${item.answer}</span>`;
+                }
+            });
+
+            const resultsEl = document.getElementById('results');
+            resultsEl.textContent = `הציון שלך: ${score} מתוך ${quizData.length}`;
+            resultsEl.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // --- Build the quiz when the page loads ---
+        window.onload = buildQuiz;
+
+    </script>
+
+</body>
+</html>
